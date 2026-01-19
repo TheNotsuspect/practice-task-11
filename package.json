@@ -12,7 +12,17 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "mongodb": "^7.0.0"
-  }
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheNotsuspect/practice-task-11.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheNotsuspect/practice-task-11/issues"
+  },
+  "homepage": "https://github.com/TheNotsuspect/practice-task-11#readme"
 }
