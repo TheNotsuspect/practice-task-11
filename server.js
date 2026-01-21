@@ -5,22 +5,17 @@ const mongoose = require('mongoose');
 const app = express();
 app.use(express.json());
 
-// =======================
-// ENV VARIABLES
-// =======================
+
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 
-// =======================
-// MONGODB CONNECTION
-// =======================
+
 mongoose.connect(MONGO_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// =======================
-// SCHEMA & MODEL
-// =======================
+
+
 const itemSchema = new mongoose.Schema({
   name: String,
   price: Number,
@@ -28,22 +23,21 @@ const itemSchema = new mongoose.Schema({
 });
 
 const Item = mongoose.model('Item', itemSchema);
-
-// =======================
 // ROUTES
-// =======================
 
 // GET /
 app.get('/', (req, res) => {
   res.send(`
     <h1>Items API</h1>
     <ul>
-      <li><a href="http://localhost:${PORT}/api/items">View all items</a></li>
+      <li><a href="https://practice-task-11.onrender.com/api/items/">View all items</a></li>
     </ul>
   `);
 });
 
-// GET /api/items
+
+
+
 app.get('/api/items', async (req, res) => {
   try {
     const items = await Item.find();
@@ -53,7 +47,8 @@ app.get('/api/items', async (req, res) => {
   }
 });
 
-// GET /api/items/:id
+
+
 app.get('/api/items/:id', async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
@@ -64,7 +59,10 @@ app.get('/api/items/:id', async (req, res) => {
   }
 });
 
-// POST /api/items
+
+
+
+
 app.post('/api/items', async (req, res) => {
   try {
     const newItem = new Item(req.body);
@@ -75,7 +73,9 @@ app.post('/api/items', async (req, res) => {
   }
 });
 
-// PUT /api/items/:id
+
+
+
 app.put('/api/items/:id', async (req, res) => {
   try {
     const updatedItem = await Item.findByIdAndUpdate(
@@ -90,7 +90,9 @@ app.put('/api/items/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/items/:id
+
+
+
 app.delete('/api/items/:id', async (req, res) => {
   try {
     const deletedItem = await Item.findByIdAndDelete(req.params.id);
@@ -101,9 +103,9 @@ app.delete('/api/items/:id', async (req, res) => {
   }
 });
 
-// =======================
-// SERVER START
-// =======================
+
+
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
