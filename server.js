@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -17,7 +16,7 @@ const MONGO_URI = process.env.MONGO_URI;
 // =======================
 mongoose.connect(MONGO_URI)
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB error:', err));
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // =======================
 // SCHEMA & MODEL
@@ -39,54 +38,72 @@ app.get('/', (req, res) => {
   res.send(`
     <h1>Items API</h1>
     <ul>
-      <li>
-        <a href="http://localhost:3000/api/items">
-          View all items
-        </a>
-      </li>
+      <li><a href="http://localhost:${PORT}/api/items">View all items</a></li>
     </ul>
   `);
 });
 
-
 // GET /api/items
 app.get('/api/items', async (req, res) => {
-  const items = await Item.find();
-  res.json(items);
+  try {
+    const items = await Item.find();
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch items' });
+  }
 });
 
 // GET /api/items/:id
 app.get('/api/items/:id', async (req, res) => {
-  const item = await Item.findById(req.params.id);
-  res.json(item);
+  try {
+    const item = await Item.findById(req.params.id);
+    if (!item) return res.status(404).json({ error: 'Item not found' });
+    res.json(item);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch item' });
+  }
 });
 
 // POST /api/items
 app.post('/api/items', async (req, res) => {
-  const newItem = new Item(req.body);
-  const savedItem = await newItem.save();
-  res.json(savedItem);
+  try {
+    const newItem = new Item(req.body);
+    const savedItem = await newItem.save();
+    res.json(savedItem);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create item' });
+  }
 });
 
 // PUT /api/items/:id
 app.put('/api/items/:id', async (req, res) => {
-  const updatedItem = await Item.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-  res.json(updatedItem);
+  try {
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedItem) return res.status(404).json({ error: 'Item not found' });
+    res.json(updatedItem);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update item' });
+  }
 });
 
 // DELETE /api/items/:id
 app.delete('/api/items/:id', async (req, res) => {
-  await Item.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Item deleted' });
+  try {
+    const deletedItem = await Item.findByIdAndDelete(req.params.id);
+    if (!deletedItem) return res.status(404).json({ error: 'Item not found' });
+    res.json({ message: 'Item deleted' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete item' });
+  }
 });
 
 // =======================
 // SERVER START
 // =======================
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
