@@ -36,8 +36,18 @@ const Item = mongoose.model('Item', itemSchema);
 
 // GET /
 app.get('/', (req, res) => {
-  res.json({ message: 'API is working' });
+  res.send(`
+    <h1>Items API</h1>
+    <ul>
+      <li>
+        <a href="http://localhost:3000/api/items">
+          View all items
+        </a>
+      </li>
+    </ul>
+  `);
 });
+
 
 // GET /api/items
 app.get('/api/items', async (req, res) => {
