@@ -5,6 +5,14 @@ const mongoose = require('mongoose');
 const app = express();
 app.use(express.json());
 
+app.get('/version', (req, res) => {
+  res.json({
+    version: "1.1",
+    updatedAt: "2026-01-18"
+  });
+});
+
+
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
@@ -23,9 +31,8 @@ const itemSchema = new mongoose.Schema({
 });
 
 const Item = mongoose.model('Item', itemSchema);
-// ROUTES
 
-// GET /
+//routes
 app.get('/', (req, res) => {
   res.send(`
     <h1>Items API</h1>
