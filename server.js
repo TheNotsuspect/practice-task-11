@@ -99,6 +99,24 @@ app.put('/api/items/:id', async (req, res) => {
 
 
 
+app.patch('/api/items/:id', async (req, res) => {
+  try {
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+
+    if (!updatedItem) return res.status(404).json({ error: 'Item not found' });
+
+    res.json(updatedItem);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to partially update item' });
+  }
+});
+
+
+
 
 app.delete('/api/items/:id', async (req, res) => {
   try {
