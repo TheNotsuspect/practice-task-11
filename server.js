@@ -5,6 +5,22 @@ const mongoose = require('mongoose');
 const app = express();
 app.use(express.json());
 
+
+const apiKeyMiddleware = (req, res, next) => {
+  const apiKey = req.headers['x-api-key'];
+
+  if (!apiKey) {
+    return res.status(401).json({ error: 'API key is missing' });
+  }
+
+  if (apiKey !== process.env.API_KEY) {
+    return res.status(403).json({ error: 'Invalid API key' });
+  }
+
+  next();
+};
+
+
 app.get('/version', (req, res) => {
   res.json({
     version: "1.1",
@@ -70,7 +86,8 @@ app.get('/api/items/:id', async (req, res) => {
 
 
 
-app.post('/api/items', async (req, res) => {
+app.post('/api/items', apiKeyMiddleware, async (req, res) => {
+
   try {
     const newItem = new Item(req.body);
     const savedItem = await newItem.save();
@@ -83,7 +100,8 @@ app.post('/api/items', async (req, res) => {
 
 
 
-app.put('/api/items/:id', async (req, res) => {
+app.put('/api/items/:id', apiKeyMiddleware, async (req, res) => {
+
   try {
     const updatedItem = await Item.findByIdAndUpdate(
       req.params.id,
@@ -99,7 +117,8 @@ app.put('/api/items/:id', async (req, res) => {
 
 
 
-app.patch('/api/items/:id', async (req, res) => {
+app.patch('/api/items/:id', apiKeyMiddleware, async (req, res) => {
+
   try {
     const updatedItem = await Item.findByIdAndUpdate(
       req.params.id,
@@ -118,7 +137,8 @@ app.patch('/api/items/:id', async (req, res) => {
 
 
 
-app.delete('/api/items/:id', async (req, res) => {
+app.delete('/api/items/:id', apiKeyMiddleware, async (req, res) => {
+
   try {
     const deletedItem = await Item.findByIdAndDelete(req.params.id);
     if (!deletedItem) return res.status(404).json({ error: 'Item not found' });
